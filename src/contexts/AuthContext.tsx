@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { showError, showSuccess } from '@/utils/toast';
 
 interface AuthContextType {
   session: Session | null;
@@ -31,12 +30,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-
-        if (event === 'SIGNED_IN') {
-          showSuccess('Login realizado com sucesso!');
-        } else if (event === 'SIGNED_OUT') {
-          showSuccess('Logout realizado com sucesso!');
-        }
       }
     );
 
@@ -49,7 +42,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await supabase.auth.signOut();
     } catch (error) {
-      showError('Erro ao fazer logout');
       console.error('Erro ao fazer logout:', error);
     }
   };
