@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { showError, showSuccess } from '@/utils/toast';
-import Navbar from '@/components/Navbar';
+import { MadeWithDyad } from '@/components/made-with-dyad';
 
 interface ProfileData {
   full_name: string;
@@ -40,7 +40,7 @@ const Profile = () => {
           .eq('user_id', user.id)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
+        if (error) {
           console.error('Erro ao buscar perfil:', error);
         } else if (data) {
           setProfile({
@@ -96,74 +96,75 @@ const Profile = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
-      
-      <main className="flex-grow flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <Card className="shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Meu Perfil</CardTitle>
-              <CardDescription>Gerencie suas informações pessoais</CardDescription>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input 
-                    id="email" 
-                    value={user.email || ''} 
-                    disabled 
-                    className="bg-gray-50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="full_name">Nome Completo</Label>
-                  <Input
-                    id="full_name"
-                    name="full_name"
-                    value={profile.full_name}
-                    onChange={handleChange}
-                    placeholder="Seu nome completo"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Telefone</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={profile.phone}
-                    onChange={handleChange}
-                    placeholder="(11) 99999-9999"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">Endereço</Label>
-                  <Input
-                    id="address"
-                    name="address"
-                    value={profile.address}
-                    onChange={handleChange}
-                    placeholder="Seu endereço completo"
-                  />
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col space-y-2">
-                <Button 
-                  type="submit" 
-                  className="w-full bg-blue-600 hover:bg-blue-700" 
-                  disabled={loading}
-                >
-                  {loading ? 'Salvando...' : 'Salvar Alterações'}
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </div>
-      </main>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle>Seu Perfil</CardTitle>
+            <CardDescription>Gerencie suas informações pessoais</CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" value={user.email || ''} disabled />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="full_name">Nome Completo</Label>
+                <Input
+                  id="full_name"
+                  name="full_name"
+                  value={profile.full_name}
+                  onChange={handleChange}
+                  placeholder="Seu nome completo"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Telefone</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  value={profile.phone}
+                  onChange={handleChange}
+                  placeholder="Seu telefone"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="address">Endereço</Label>
+                <Input
+                  id="address"
+                  name="address"
+                  value={profile.address}
+                  onChange={handleChange}
+                  placeholder="Seu endereço"
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-2">
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full" 
+                onClick={handleLogout}
+              >
+                Sair
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
+      <MadeWithDyad />
     </div>
   );
 };
